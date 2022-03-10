@@ -20,8 +20,6 @@ echo "export KOPS_STATE_STORE=s3://$c.dev.$a.com" >> /etc/profile
 source /etc/profile
 #generate ssh keys
 ssh-keygen
-sudo cp -pr /usr/local/bin/kops /usr/local/sbin
-sudo cp -pr /usr/local/bin/kubectl /usr/local/sbin
 #install docker
 sudo yum install docker -y
 
