@@ -15,14 +15,16 @@ echo "enter name of the cluster"
 read c
 aws s3 mb s3://$c.dev.$a.com
 echo "export PATH=$PATH:/usr/local/bin:/usr/local/sbin" >> /etc/profile
-source /etc/profile
 echo "export KOPS_STATE_STORE=s3://$c.dev.$a.com" >> /etc/profile
-source /etc/profile
+sudo cp -pr /usr/local/bin/kops /usr/local/sbin
+sudo cp -pr /usr/local/bin/kubectl /usr/local/sbin
+
 #generate ssh keys
 ssh-keygen
 #install docker
 sudo yum install docker -y
 
+source /etc/profile
 #create cluster
 kops create cluster $c.dev.$a.com --zones=$b --node-size=t2.micro --master-size=t2.micro --dns-zone=$a.com --dns private
 kops update cluster --name $c.dev.$a.com --yes
