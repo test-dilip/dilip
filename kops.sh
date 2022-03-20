@@ -18,6 +18,7 @@ echo "export PATH=$PATH:/usr/local/bin:/usr/local/sbin" >> /etc/profile
 echo "export KOPS_STATE_STORE=s3://$c.dev.$a.com" >> /etc/profile
 sudo cp -pr /usr/local/bin/kops /usr/local/sbin
 sudo cp -pr /usr/local/bin/kubectl /usr/local/sbin
+source /etc/profile
 
 #generate ssh keys
 ssh-keygen
