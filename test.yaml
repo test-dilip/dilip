@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test
+  name: test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      volumes:
+      - name: volume
+        hostPath:
+         path: /app     
+      containers:
+      - image: tomcat
+        name  : tomcat
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /app
+          name: volume
+
+      - image: nginx
+        name: nginx

@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+ name: dev
+ labels:
+   apps: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      apps: dev
+  template:
+   metadata:
+     labels:
+       apps: dev
+   spec:
+    volumes:
+    - name: volume1
+      hostPath:
+        path: /NFS
+    - name: volume2
+      hostPath:
+       path: /NFS      
+    containers:
+    - image: tomcat
+      name: container-1-tomcat
+      ports:
+      - containerPort: 8080
+      volumeMounts:
+      - mountPath: /tomcat
+        name: volume1
+    - image: httpd
+      name: container-2-httpd
+      ports:
+        - containerPort: 80
+      volumeMounts:
+      - mountPath: /httpd
+        name: volume2  
