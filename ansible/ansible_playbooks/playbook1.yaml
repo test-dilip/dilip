@@ -1,0 +1,72 @@
+---
+- name: create play1
+  hosts: all
+  vars_prompt:
+  - name: username
+    prompt: provide username
+    private: no
+  vars:
+  - passwd: $6$YEw53K.6IUqTXO14$CikygStE6lku6DyPtucW1bYFQ3UysMA6TojaP.KAI/nZFQiWe4IYWrcA1UKUfosfc/HigQ9HboQ8VKY79lZpq1
+    # run the playbook as like below
+    # ansible-playbook playbook1.yaml --ask-pass
+    # password (original) = mummy
+  tasks:
+  - name: create a user in modes and nodes
+    user:
+      name: "{{ username }}"
+      password: "{{ passwd }}"
+      state: present
+    register: user_name
+  - name: enable password authentication yes
+    ansible.builtin.lineinfile:
+      dest: /etc/ssh/sshd_config
+      backup: yes
+      regexp: '^PasswordAuthentication'
+      insertafter: '^#PermitEmptyPasswords'
+      line: 'PasswordAuthentication yes'
+      state: present
+  - name: provide sudo access
+    ansible.builtin.lineinfile:
+      dest: /etc/sudoers
+      backup: yes
+      regexp: '^{{ username }}'
+      line: '{{ username }} ALL=(ALL) NOPASSWD: ALL'
+      state: present
+    notify:
+      - restart sshd
+  - name: create a directory by block and rescue
+    block:
+    - name: checking .ssh dir
+      command: ls -l /home/{{ username }}/.ssh
+    rescue:
+    - name: creating .ssh dir
+      file:
+        name: /home/{{ username }}/.ssh
+        state: directory
+  - name: generate ssh keys
+    openssh_keypair:
+      path: "/home/{{ username }}/.ssh/id_rsa"
+      type: rsa
+      size: 4096
+      state: present
+      force: no
+    delegate_to: localhost
+  - name: copy public key into remote servers
+    copy:
+      src: /home/{{ username }}/.ssh/id_rsa.pub
+      dest: /home/{{ username }}/.ssh/authorized_keys
+    when: inventory_hostname in groups["dev"]
+  - name: change ownership of /etc/ansible
+    file:
+      path: /etc/ansible
+      owner: "{{ user_name.uid }}"
+      group: "{{ user_name.group }}"
+    when: inventory_hostname in groups["local"]
+  - name: change the ownership for/~/.ssh
+    command: chown -R "{{ username }}":"{{ username }}" /home/{{ username }}/.ssh
+    delegate_to: localhost
+  handlers:
+  - name: restart sshd
+    service:
+      name: sshd
+      state: restarted
