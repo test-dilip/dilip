@@ -1,0 +1,9 @@
+---
+- name: enable password authentication yes
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    backup: yes
+    regexp: '^PasswordAuthentication'
+    insertafter: '^#PermitEmptyPasswords'
+    line: 'PasswordAuthentication yes'
+    state: present

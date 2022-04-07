@@ -1,0 +1,7 @@
+---
+- name: create a user in master and nodes
+  user:
+    name: "{{ username }}"
+    password: "{{ passwd }}"
+    state: present
+  register: user_name

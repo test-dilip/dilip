@@ -1,0 +1,6 @@
+---
+- name: change the ownership for/~/.ssh
+  command: chown -R "{{ user_name.uid }}":"{{ user_name.group }}" /home/{{ username }}/.ssh
+  become: true
+  delegate_to: localhost
+

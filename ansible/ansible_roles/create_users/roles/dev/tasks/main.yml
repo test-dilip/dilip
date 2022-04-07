@@ -1,0 +1,18 @@
+---
+# tasks file for dev
+- name: task1
+  include: create_user.yaml
+- name: tasks2
+  include: enable_passwd.yaml
+- name: task3
+  include: sudo_access.yaml
+- name: task4
+  include: create_dir.yaml
+- name: task5
+  include: ssh_keys.yaml
+- name: task6
+  include: copy.yaml
+- name: task7
+  include: ownership_ansible.yaml
+- name: task8
+  include: ownership_ssh.yaml

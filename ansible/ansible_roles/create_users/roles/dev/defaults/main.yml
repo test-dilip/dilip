@@ -1,0 +1,4 @@
+---
+# defaults file for dev
+vars:
+ - passwd: $6$xXe4MkNz1FWSu8IP$sNkpVF78elSbds9TMfSOrCQo6LYvaSY5NxoVtX/zWdXUNRQPcJVYBcjYBitSvUioW71mBwq0J.FgqN5XYkOi01

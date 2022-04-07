@@ -1,0 +1,12 @@
+---
+- name: run roles
+  hosts: all
+  vars_prompt:
+  - name: username
+    prompt: provide username
+    private: no
+  vars:
+  - passwd: $6$Bw6/urbasdO34wYO$SZxvYl/FsTP2U85dhGwwjbBiE0I8/eEZJUiGP3P2Fef2hoj9QJK0kifyMNmHtbOLYF6eQ27uSQhVDb8tripKz1
+  roles:
+  - dev
+...

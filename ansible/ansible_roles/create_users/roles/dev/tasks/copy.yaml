@@ -1,0 +1,6 @@
+---
+- name: copy public key into remote servers
+  copy:
+    src: /home/{{ username }}/.ssh/id_rsa.pub
+    dest: /home/{{ username }}/.ssh/authorized_keys
+  when: inventory_hostname in groups["dev"]

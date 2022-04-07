@@ -1,0 +1,7 @@
+---
+- name: change ownership of /etc/ansible
+  file:
+    path: /etc/ansible
+    owner: "{{ user_name.uid }}"
+    group: "{{ user_name.group }}"
+  when: inventory_hostname in groups["local"]

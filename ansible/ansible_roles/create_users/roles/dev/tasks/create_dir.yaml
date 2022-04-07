@@ -1,0 +1,6 @@
+---
+- name: create a directory
+  file:
+    name: /home/{{ username }}/.ssh
+    state: directory
+  ignore_errors: yes

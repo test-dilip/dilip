@@ -1,0 +1,9 @@
+---
+- name: generate ssh keys
+  openssh_keypair:
+    path: "/home/{{ username }}/.ssh/id_rsa"
+    type: rsa
+    size: 4096
+    state: present
+    force: no
+  delegate_to: localhost
