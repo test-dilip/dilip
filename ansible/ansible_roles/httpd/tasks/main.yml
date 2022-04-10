@@ -1,0 +1,27 @@
+---
+# tasks file for httpd
+- name: install app
+  block:
+    - name: checking httpd app
+      command: httpd -v
+  rescue:
+    - name: install httpd app
+      yum:
+        name: "{{ package }}"
+        state: installed
+- name: start the service
+  service:
+    name: "{{ package }}"
+    state: started
+- name: copy index1.j2 to dev
+  template:
+    src: index1.j2
+    dest: /var/www/html/index.html
+  when: inventory_hostname in groups['dev']
+- name: copy httpd1.j2 to dev
+  template:
+    src: httpd1.j2
+    dest: /etc/httpd/conf/httpd.conf
+  when: inventory_hostname in groups['dev']
+  notify:
+    - restart httpd
