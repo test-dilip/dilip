@@ -1,0 +1,12 @@
+---
+- hosts: all
+  tasks:
+    - name: install app
+      block:
+        - name: checking app
+          command: httpd -v
+      rescue:
+        - name: install 
+          yum:
+            name: httpd
+            state: installed

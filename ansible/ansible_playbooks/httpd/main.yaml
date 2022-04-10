@@ -1,0 +1,61 @@
+---
+- name: create a play1
+  hosts: all
+  vars:
+    - package: httpd
+  vars_prompt:
+  - name: messg1
+    prompt: provide message in dev
+    private: no
+  - name: messg2
+    prompt: provide message in test
+    private: false
+  - name: port_no1
+    prompt: provide port no1 in dev
+    private: no
+  - name: port_no2
+    prompt: provide port no2 in test
+    private: false
+  tasks:
+  - name: install httpd app
+    block:
+    - name: checking app version
+      command: httpd -v
+    rescue:
+    - name: install app
+      yum:
+       name: "{{ package }}"
+       state: installed
+  - name: start the service
+    service:
+      name: "{{ package }}"
+      state: started
+  - name: copy index1.html (static content)in dev
+    template:
+      src: /root/httpd/index1.j2
+      dest: /var/www/html/index.html
+    when: inventory_hostname in groups['dev']
+  - name: copy index2.html in test
+    template:
+      src: /root/httpd/index2.j2
+      dest: /var/www/html/index.html
+    when: inventory_hostname in groups['test']
+  - name: copy the config file in dev
+    template:
+      src: /root/httpd/httpd1.j2
+      dest: /etc/httpd/conf/httpd.conf
+    when: inventory_hostname in groups['dev']
+    notify:
+      - restart httpd
+  - name: copy the config file in test
+    template:
+      src: /root/httpd/httpd2.j2
+      dest: /etc/httpd/conf/httpd.conf
+    when: inventory_hostname in groups['test'] 
+    notify:
+      - restart httpd
+  handlers:
+  - name: restart httpd
+    service:
+      name: "{{ package }}"
+      state: restarted
