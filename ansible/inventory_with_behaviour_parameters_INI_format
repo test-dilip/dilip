@@ -1,0 +1,13 @@
+[local]
+localhost ansible_connection=local
+[aws:children]
+dev
+ops
+[dev]
+172.31.14.171 ansible_user=ec2-user
+[ops]
+172.31.6.74 ansible_user=ubuntu
+[aws:vars]
+ansible_ssh_private_key_file=/etc/ansible/dilip.pem
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_become=yes
