@@ -1,0 +1,7 @@
+---
+ - name: selecting required java in RedHat
+   alternatives:
+     name: java
+     link: /usr/bin/java
+     path: /usr/lib/jvm/{{set_java_RedHat}}/bin/java
+

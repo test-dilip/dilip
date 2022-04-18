@@ -1,0 +1,58 @@
+---
+ - name: ansible playbook for tomcat which supports any version of tomcat and distribution are RedHat and Debian
+   hosts: all
+   become: yes
+   vars:
+     - req_java_RedHat: java-1.8.0-openjdk
+     - req_java_Debian: openjdk-8-jdk
+     - set_java_RedHat: jre-1.8.0-openjdk
+     - set_java_Debian: java-8-openjdk-amd64
+     - tomcat_url: https://dlcdn.apache.org/tomcat/tomcat-{{req_tomcat_ver.split('.')[0]}}/v{{req_tomcat_ver}}/bin/apache-tomcat-{{req_tomcat_ver}}.tar.gz
+   vars_prompt:
+     - name: tomcat_port
+       prompt: provide tomcat port
+       default: 8080
+       private: no
+     - name: req_tomcat_ver
+       prompt: provide tomcat version
+       default: 9.0.62
+       private: false
+   tasks:
+   - name: updating repos
+     include_tasks: update_repos_{{ansible_os_family}}.yaml
+   - name: installing required java
+     include_tasks: install_java_{{ansible_os_family}}.yaml
+   - name: selecting required java
+     include_tasks: select_alternatives_{{ansible_os_family}}.yaml
+   - name: downloading required tomcat
+     get_url:
+       url: "{{tomcat_url}}"
+       dest: /usr/local
+     become: yes
+   - name: extracting downloaded tomcat
+     unarchive:
+       src: "/usr/local/apache-tomcat-{{req_tomcat_ver}}.tar.gz"
+       dest: /usr/local
+       remote_src: yes
+   - name: renaming tomcat home
+     command: mv /usr/local/apache-tomcat-{{req_tomcat_ver}} /usr/local/latest
+     ignore_errors: True
+   - name: replacing default port with required port
+     template:
+       src: /home/sai/server.xml.j2
+       dest: /usr/local/latest/conf/server.xml
+     notify:
+     - stop the tomcat
+   - name: copying tomcat-user.xml
+     template:
+       src: /home/sai/tomcat-users.xml.j2
+       dest: /usr/local/latest/conf/tomcat-users.xml
+   - name: copying context.xml
+     template:
+       src:  /home/sai/context.xml.j2
+       dest: /usr/local/latest/webapps/manager/META-INF/context.xml
+   - name: running tomcat
+     shell: nohup /usr/local/latest/bin/startup.sh &
+   handlers:
+   - name: stop the tomcat
+     shell: /usr/local/latest/bin/shutdown.sh

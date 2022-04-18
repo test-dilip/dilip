@@ -1,0 +1,5 @@
+---
+- name: Installing java on RedHat family
+  yum:
+    name: "{{req_java_RedHat}}"
+    state: present
