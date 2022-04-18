@@ -1,0 +1,14 @@
+---
+ - name: usage of always
+   hosts: localhost
+   tasks:
+   - block:
+      - name: checking file path
+        command: "ls -l /home/sai/dir1" 
+     rescue:
+      - debug: 
+         msg: "file path not exists"
+     always:
+      - debug:
+         msg: "done with playbook"
+
