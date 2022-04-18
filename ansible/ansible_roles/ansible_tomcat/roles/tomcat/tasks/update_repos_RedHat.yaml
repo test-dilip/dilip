@@ -1,0 +1,5 @@
+---
+- name: updating repos in RedHat
+  yum:
+    name: "*"
+    state: latest

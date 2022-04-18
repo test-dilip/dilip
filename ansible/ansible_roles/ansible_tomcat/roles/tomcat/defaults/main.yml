@@ -1,0 +1,8 @@
+---
+# vars file for tomcat
+vars:
+- req_java_RedHat: java-1.8.0-openjdk
+- req_java_Debian: openjdk-8-jdk
+- set_java_RedHat: jre-1.8.0-openjdk
+- set_java_Debian: java-8-openjdk-amd64
+- tomcat_url: https://dlcdn.apache.org/tomcat/tomcat-{{req_tomcat_ver.split('.')[0]}}/v{{req_tomcat_ver}}/bin/apache-tomcat-{{req_tomcat_ver}}.tar.gz

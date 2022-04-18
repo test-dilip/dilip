@@ -1,0 +1,5 @@
+---
+- name: Installing java on Debian family
+  apt:
+    name: "{{req_java_Debian}}"
+    state: present
