@@ -1,0 +1,28 @@
+---
+ - name: usage of ignore erros
+   hosts: localhost
+   gather_facts: false
+   tasks:
+     - block:
+       - command: "ls /home/sai/tomcat1"
+         register: tomcat1_out
+       - command: "ls /home/sai/tomcat2"
+         register: tomcat2_out
+       - command: "ls /home/sai/tomcat3"
+         register: tomcat3_out
+       - name: installing httpd for redhat os family
+         yum:
+           name: httpd
+           state: present
+       - name: starting httpd for redhat os family
+         service:
+           name: httpd
+           state: started
+       when: ansible_os_family=="RedHat"
+       become: yes
+       ignore_erros: yes
+
+     - debug: var=tomcat1_out
+     - debug: var=tomcat2_out
+     - debug: var=tomcat3_out
+...
