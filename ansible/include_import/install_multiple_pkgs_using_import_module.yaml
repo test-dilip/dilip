@@ -1,0 +1,13 @@
+---
+ - name: create play1
+   hosts: all
+   become: yes
+   tasks:
+   - import_tasks: install_webserver_RedHat.yaml  
+     when: ansible_os_family=="RedHat"
+   - import_tasks: install_webserver_Debain.yaml
+     when: ansible_os_family=="Debian"
+   - import_tasks: install_java_RedHat.yaml
+     when: ansible_os_family=="RedHat"
+   - import_tasks: install_java_Debain.yaml
+     when: ansible_os_family=="Debian"
